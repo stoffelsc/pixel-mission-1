@@ -10,3 +10,6 @@
 .keyboard-key{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;min-height:37px;background:#fff;border-radius:6px;border:1px solid #c4d2e4;border-bottom:3px solid #9eafc8;color:#234462;font-size:11px;font-weight:850;white-space:nowrap}
 .keyboard-key.wide-key{flex:1.6}
 @media(max-width:650px){.hero{grid-template-columns:1fr 100px;gap:8px}.pixel-hero-figure{max-width:120px}.keyboard-row{min-width:450px}.hero h1{font-size:27px}}
+
+/* Illustrations interactives des composants */
+.parts{grid-template-columns:repeat(2,minmax(0,1fr))}.part{min-height:150px;padding:9px 5px;overflow:hidden}.part svg{width:min(100%,155px);height:auto;max-height:105px}.part small{font-size:12px;white-space:normal;line-height:1.2}.port-visual{background:linear-gradient(140deg,#f6fbff,#e8f2ff)}.port-visual svg{width:min(100%,320px);height:auto}
