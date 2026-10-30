@@ -33,7 +33,7 @@
 .virtual-keyboard.fr-fr .virtual-key{min-height:48px;font-size:13px}
 .virtual-keyboard.fr-fr .virtual-key small{font-size:10px;color:#3766a2}
 .rom-photo{position:relative}
-.rom-photo::after{content:'';position:absolute;top:45%;left:34%;width:39%;height:15%;background:rgba(32,33,58,.94);border-radius:6px;transform:rotate(-10deg);pointer-events:none}
+
 .dp-exact svg{display:block;width:100%;height:auto;max-height:370px}
 .final-quiz-promo{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;margin:30px 0 45px;padding:28px;background:linear-gradient(125deg,#e6f1ff,#f5eafd);border:2px solid #d8e7ff;border-radius:25px}
 .final-quiz-promo h2{margin:7px 0;font-size:27px}.final-quiz-promo p{margin:6px 0;max-width:570px;color:#536278}
@@ -54,4 +54,8 @@
 .keyboard-scroll::-webkit-scrollbar{height:9px}.keyboard-scroll::-webkit-scrollbar-thumb{background:#809dd0;border-radius:20px}
 .virtual-keyboard.fr-fr{min-width:750px!important;width:750px!important}
 .match-item.paired{color:#27394b!important;font-weight:900}
-.ssd-photo{position:relative}.ssd-photo::after{content:'';position:absolute;left:28%;top:32%;width:36%;height:27%;background:#171d28;border-radius:6px;transform:rotate(-19deg);pointer-events:none;box-shadow:0 0 3px 2px #171d28}
+.ssd-photo{position:relative}
+
+/* Visuels techniques autonomes, sans masquage d'étiquettes */
+.tech-photo.ssd-exact,.tech-photo.rom-exact,.tech-photo.dp-exact{width:100%;height:auto;max-width:680px;overflow:hidden;background:#eaf7ff;border-radius:18px}
+.tech-photo.ssd-exact svg,.tech-photo.rom-exact svg,.tech-photo.dp-exact svg{width:100%;height:auto;display:block;max-height:none}
