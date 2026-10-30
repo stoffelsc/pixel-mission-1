@@ -1,23 +1,29 @@
-# Le Monde de Pixel – Mission 1 : Mon poste de travail
+# Le Monde de Pixel — Mission 1 (version avec images intégrées)
 
-Jeu pédagogique en **TypeScript + Vite** pour élèves de 1re secondaire.
+Projet TypeScript + Vite pour la formation numérique (1re secondaire).
 
-## Rubriques
-- Matériel et logiciels
-- À l'intérieur du PC (schéma interactif)
-- Périphériques
-- Ports et connecteurs (dessins vectoriels)
-- Défi clavier AZERTY belge
+## Contenu
+- Hardware / Software : questions sur la distinction matériel/logiciel uniquement.
+- À l’intérieur du PC : RAM, ROM, SSD, disque dur interne, disque dur externe, clé USB, processeur ; illustrations 3D créées pour le projet.
+- Périphériques : entrée, sortie, entrée/sortie.
+- Ports et connecteurs : 11 illustrations 3D originales, DisplayPort remplacé par un visuel au coin supérieur droit coupé, et deux questions sur la différence entre port et connecteur.
+- Clavier : AZERTY français France complet, combinaisons de touches et saisie progressive de lettres puis de mots.
+- Mascotte Pixel illustrée en 3D.
 
-Questions à choix unique, choix multiples, identification tactile des composants, schémas de connecteurs, exercices clavier et saisie de caractères. Progression sauvegardée localement dans le navigateur. Mise en page adaptative aux téléphones, tablettes et ordinateurs.
+Toutes les images sont enregistrées sous `public/images/` et fonctionnent sans les photos Wikimedia Commons. Aucune image n’est chargée depuis Wikipédia.
 
-## Lancer localement
-```sh
+## Démarrer
+
+```bash
 npm install
 npm run dev
 ```
 
-## Publier
-Le workflow `.github/workflows/deploy.yml` compile le jeu sur la branche `main`. Dans **Settings → Pages**, définir **GitHub Actions** comme source de publication.
+## Vérifier et compiler
 
-URL attendue après activation : https://stoffelsc.github.io/pixel-mission-1/
+```bash
+npm run build
+```
+
+## GitHub Pages
+Le dépôt dispose d’un workflow `.github/workflows/deploy.yml` et de la configuration Vite pour GitHub Pages. Après mise à jour des fichiers GitHub, la compilation et la publication seront lancées par GitHub Actions.
