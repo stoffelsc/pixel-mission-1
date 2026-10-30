@@ -13,3 +13,9 @@
 
 /* Illustrations interactives des composants */
 .parts{grid-template-columns:repeat(2,minmax(0,1fr))}.part{min-height:150px;padding:9px 5px;overflow:hidden}.part svg{width:min(100%,155px);height:auto;max-height:105px}.part small{font-size:12px;white-space:normal;line-height:1.2}.port-visual{background:linear-gradient(140deg,#f6fbff,#e8f2ff)}.port-visual svg{width:min(100%,320px);height:auto}
+
+/* Photographies des vrais connecteurs : remplacer les schémas simplifiés */
+.real-port-photo{position:relative;border-radius:16px;overflow:hidden;background:#fff;min-height:200px;display:flex;align-items:center;justify-content:center;flex-direction:column;border:1px solid #d3e3f5;margin:12px 0}
+.real-port-photo img{display:block;width:100%;height:250px;object-fit:contain;background:#fff;padding:7px}
+.photo-credit{font-size:11px;color:#7184a0;padding:5px 8px;text-align:center}
+@media(max-width:520px){.real-port-photo img{height:210px}}
