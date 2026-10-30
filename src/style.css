@@ -59,3 +59,7 @@
 /* Visuels techniques autonomes, sans masquage d'étiquettes */
 .tech-photo.ssd-exact,.tech-photo.rom-exact,.tech-photo.dp-exact{width:100%;height:auto;max-width:680px;overflow:hidden;background:#eaf7ff;border-radius:18px}
 .tech-photo.ssd-exact svg,.tech-photo.rom-exact svg,.tech-photo.dp-exact svg{width:100%;height:auto;display:block;max-height:none}
+
+/* Photographies pédagogiques : afficher l'intégralité des objets sans zoom ni découpe */
+.tech-photo.reference-photo{display:flex;align-items:center;justify-content:center;background:#f5f9ff;width:100%;min-height:230px;border-radius:18px;overflow:hidden}
+.tech-photo.reference-photo img{display:block;width:100%;max-width:100%;height:auto;max-height:none;object-fit:contain;padding:8px}
