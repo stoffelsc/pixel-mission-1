@@ -26,7 +26,7 @@ const list = () => quizMode ? quizList : questions.filter(q=>q.category === acti
 const current = () => list()[index];
 const cat = () => categories.find(c=>c.id===active)!;
 const countStars = () => Object.entries(saved).filter(([k,n])=>n >= Math.ceil(questions.filter(q=>q.category===k).length*0.75)).length;
-const imageRoot = `${import.meta.env.BASE_URL}images/`;
+const imageRoot = './images/';
 const mascot = (_mood: 'happy' | 'thinking' = 'happy') => `<img class="real-mascot" src="${imageRoot}pixel.webp" alt="Pixel, la mascotte bleue du Monde de Pixel" />`;
 function portSvg(name: string): string {
  const lookup:Record<string,string>={'HDMI':'hdmi','VGA':'vga','DisplayPort':'displayport','RJ45':'rj45','Jack 3,5 mm':'jack','USB-A':'usb-a','USB-B':'usb-b','USB-C':'usb-c','Mini-USB':'mini-usb','Micro-USB':'micro-usb','DC-IN':'dc-in','ram':'ram','rom':'rom','ssd':'ssd','hdd-internal':'hdd-internal','hdd-external':'hdd-external','usb':'usb','cpu':'cpu'};
