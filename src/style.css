@@ -47,3 +47,11 @@
 
 /* Galerie visuelle des vrais fichiers de connecteurs intégrés au projet */
 .connector-gallery{background:#fff;border:2px solid #dbe8fa;border-radius:24px;padding:18px;margin:0 0 20px;box-shadow:0 8px 25px #9bbbd522}.connector-gallery h3{font-size:clamp(18px,2.7vw,25px);margin:0 0 6px;color:#173d76}.connector-gallery p{margin:0 0 14px;color:#536e8e}.connector-gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px}.connector-gallery-item{min-height:110px;background:#eef7ff;border-radius:14px;padding:8px;display:flex;align-items:center;justify-content:center}.connector-gallery-item img{display:block;max-width:100%;width:100%;height:105px;object-fit:contain}.connector-gallery-item.missing-image{background:#ffdddd;border:2px solid #f56565}.tech-photo img{display:block;width:100%;max-width:600px;max-height:350px;object-fit:contain;margin:auto}
+
+/* Corrections ciblées après les captures d'écran du 30/10 */
+.keyboard-help{font-size:14px;line-height:1.45;font-weight:800;color:#2152a1;background:#e5f2ff;border:1px solid #b5d6ff;border-radius:13px;padding:10px 13px;margin:14px 0 8px}
+.keyboard-scroll{display:block!important;overflow-x:scroll!important;max-width:100%;-webkit-overflow-scrolling:touch;scrollbar-width:auto}
+.keyboard-scroll::-webkit-scrollbar{height:9px}.keyboard-scroll::-webkit-scrollbar-thumb{background:#809dd0;border-radius:20px}
+.virtual-keyboard.fr-fr{min-width:750px!important;width:750px!important}
+.match-item.paired{color:#27394b!important;font-weight:900}
+.ssd-photo{position:relative}.ssd-photo::after{content:'';position:absolute;left:28%;top:32%;width:36%;height:27%;background:#171d28;border-radius:6px;transform:rotate(-19deg);pointer-events:none;box-shadow:0 0 3px 2px #171d28}
