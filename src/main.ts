@@ -37,6 +37,9 @@ q('Un vidéoprojecteur est…',['D’entrée','De sortie'],1,'Il projette des im
 q('Une imprimante multifonction avec scanner est…',['D’entrée et de sortie','De sortie uniquement'],0,'Elle imprime et numérise.')
 ]},
 {id:'ports',icon:'🔌',title:'Ports et connecteurs',subtitle:'Observe les formes et reconnais les prises',color:'#eb9b3d',items:[
+q('Qu’est-ce qu’un port informatique ?',['Une prise située sur un appareil où brancher un connecteur','L’embout du câble','Un logiciel'],0,'Le port est l’emplacement sur l’appareil où l’on branche un connecteur.'),
+q('Qu’est-ce qu’un connecteur informatique ?',['Un dossier dans le PC','La fiche au bout d’un câble ou d’un périphérique','La prise intégrée au PC'],1,'Le connecteur est l’embout qui s’insère dans le port.'),
+
 q('Reconnais le connecteur illustré.',['HDMI','VGA','USB-C','RJ45'],0,'HDMI transmet une image et souvent le son.',{kind:'visual',visual:'hdmi'}),
 q('Reconnais le connecteur illustré.',['HDMI','VGA','USB-A','DisplayPort'],1,'VGA possède 15 broches en trois rangées.',{kind:'visual',visual:'vga'}),
 q('Reconnais le connecteur illustré.',['DisplayPort','HDMI','Mini-USB','RJ45'],0,'DisplayPort possède un angle caractéristique.',{kind:'visual',visual:'displayport'}),
