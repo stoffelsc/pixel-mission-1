@@ -1,109 +1,112 @@
 import './style.css';
+import { categories, questions, type CategoryId, type Question } from './questions';
 
-type Question={question:string;options:string[];answer:number|number[];why:string;kind?:'single'|'multi'|'visual'|'keyboard'|'parts'|'order'|'type';visual?:string;target?:string};
-type Topic={id:string;icon:string;title:string;subtitle:string;color:string;items:Question[]};
-const q=(question:string,options:string[],answer:number|number[],why:string,extra:Partial<Question>={}):Question=>({question,options,answer,why,...extra});
-const topics:Topic[]=[
-{id:'hardware',icon:'🖥️',title:'Hardware / Software',subtitle:'Reconnaître ce qui est matériel ou logiciel',color:'#3f86e7',items:[
-q('Que signifie hardware ?',['Les éléments matériels','Les logiciels','Les fichiers'],0,'Hardware signifie matériel informatique.'),
-q('Que signifie software ?',['Les périphériques','Les programmes et applications','Les câbles'],1,'Software signifie logiciel.'),
-q('Quels éléments sont du hardware ?',['Clavier','Windows','Écran','Souris'],[0,2,3],'Ces objets physiques sont du matériel.',{kind:'multi'}),
-q('Quels éléments sont du software ?',['Scratch','Imprimante','Microsoft Word','Windows'],[0,2,3],'Scratch, Word et Windows sont des logiciels.',{kind:'multi'}),
-q('Un navigateur Internet est…',['Du hardware','Du software'],1,'Un navigateur est un programme.'),
-q('Un écran tactile est…',['Du hardware','Du software'],0,'C’est un appareil physique.'),
-q('Quel exemple est un logiciel ?',['Clé USB','Paint','Webcam'],1,'Paint est un logiciel.'),
-q('Quel exemple est du matériel ?',['Google Chrome','PowerPoint','Casque audio'],2,'Le casque est un objet matériel.')
-]},
-{id:'parts',icon:'🧩',title:'RAM, ROM et stockage',subtitle:'7 éléments : RAM, ROM, SSD, HDD interne/externe, clé USB, processeur',color:'#8b65d9',items:[
-q('Quel élément sert de mémoire de travail temporaire ?',['RAM','ROM','SSD','Clé USB'],0,'La RAM conserve temporairement les données utilisées.'),
-q('Quelle mémoire est non volatile ?',['RAM','ROM'],1,'La ROM conserve son contenu sans alimentation.'),
-q('Quel élément réalise les calculs et exécute les instructions ?',['SSD','Processeur','Disque dur externe'],1,'Le processeur exécute les instructions.'),
-q('Parmi ces éléments, lesquels servent au stockage de fichiers ?',['SSD','Disque dur interne','Disque dur externe','Clé USB'],[0,1,2,3],'Les quatre permettent de stocker des fichiers.',{kind:'multi'}),
-q('Quelle image représente une RAM ?',['RAM','ROM','SSD','Processeur'],0,'La RAM est généralement sous forme de barrette.',{kind:'parts'}),
-q('Quelle image représente un SSD ?',['RAM','ROM','SSD','Processeur'],2,'Le SSD sert au stockage.',{kind:'parts'}),
-q('Quelle image représente un processeur ?',['RAM','ROM','SSD','Processeur'],3,'Le processeur est une puce carrée.',{kind:'parts'}),
-q('Quelle image représente la ROM ?',['RAM','ROM','SSD','Processeur'],1,'La ROM est illustrée par une puce mémoire.',{kind:'parts'}),
-q('Quel support se branche pour transporter des fichiers ?',['ROM','Processeur','Clé USB','RAM'],2,'Une clé USB est un support amovible.'),
-q('Quel stockage est destiné à rester dans le boîtier ?',['Disque dur interne','Disque dur externe'],0,'Le disque dur interne est installé dans le PC.'),
-q('Quel stockage se transporte souvent dans un boîtier relié par câble ?',['RAM','Disque dur externe','ROM'],1,'Le disque dur externe se connecte au PC.'),
-q('Que devient le contenu de la RAM sans alimentation ?',['Il est conservé','Il disparaît'],1,'La RAM est volatile.')
-]},
-{id:'periph',icon:'🎧',title:'Périphériques',subtitle:'Entrée, sortie, entrée et sortie',color:'#19a58d',items:[
-q('La souris est un périphérique…',['D’entrée','De sortie','D’entrée et de sortie'],0,'Elle transmet les clics et déplacements.'),
-q('Quels sont les périphériques d’entrée ?',['Microphone','Webcam','Imprimante','Clavier'],[0,1,3],'Ils transmettent des informations vers le PC.',{kind:'multi'}),
-q('Quels sont les périphériques de sortie ?',['Écran','Haut-parleurs','Scanner','Imprimante'],[0,1,3],'Ils restituent des informations.',{kind:'multi'}),
-q('Un écran tactile est un périphérique…',['D’entrée','De sortie','D’entrée et de sortie'],2,'Il affiche et reçoit les gestes.'),
-q('Un scanner est un périphérique…',['D’entrée','De sortie'],0,'Il numérise des documents.'),
-q('Un casque avec microphone est…',['D’entrée uniquement','De sortie uniquement','D’entrée et de sortie'],2,'Il reçoit et émet du son.'),
-q('Un vidéoprojecteur est…',['D’entrée','De sortie'],1,'Il projette des images.'),
-q('Une imprimante multifonction avec scanner est…',['D’entrée et de sortie','De sortie uniquement'],0,'Elle imprime et numérise.')
-]},
-{id:'ports',icon:'🔌',title:'Ports et connecteurs',subtitle:'Observe les formes et reconnais les prises',color:'#eb9b3d',items:[
-q('Qu’est-ce qu’un port informatique ?',['Une prise située sur un appareil où brancher un connecteur','L’embout du câble','Un logiciel'],0,'Le port est l’emplacement sur l’appareil où l’on branche un connecteur.'),
-q('Qu’est-ce qu’un connecteur informatique ?',['Un dossier dans le PC','La fiche au bout d’un câble ou d’un périphérique','La prise intégrée au PC'],1,'Le connecteur est l’embout qui s’insère dans le port.'),
+type Save = Record<CategoryId, number>;
+const app = document.querySelector<HTMLDivElement>('#app')!;
+const storageKey = 'pixel-mission1-v2';
+const defaultSave = (): Save => ({ hardware:0,components:0,peripherals:0,connectors:0,keyboard:0 });
+function readSave(): Save { try { const raw = JSON.parse(localStorage.getItem(storageKey) || '{}') as Partial<Save>; return { ...defaultSave(), ...raw }; } catch { return defaultSave(); } }
+let saved = readSave();
+let active: CategoryId = 'hardware';
+let index = 0;
+let score = 0;
+let answered = false;
+let selected = new Set<string>();
+let matched: [string,string][] = [];
+let chosenLeft: string | null = null;
+let arranged: string[] = [];
+let typed = '';
+let lastCorrect = false;
+let visualChoice = "";
+const h = (value: string) => value.replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]!));
+const list = () => questions.filter(q=>q.category === active);
+const current = () => list()[index];
+const cat = () => categories.find(c=>c.id===active)!;
+const countStars = () => Object.entries(saved).filter(([k,n])=>n >= Math.ceil(questions.filter(q=>q.category===k).length*0.75)).length;
+const mascot = (_mood: 'happy' | 'thinking' = 'happy') => `<img class="real-mascot" src="./images/pixel.webp" alt="Pixel, la mascotte bleue du Monde de Pixel" />`;
+function portSvg(name: string): string {
+ const lookup:Record<string,string>={'HDMI':'hdmi','VGA':'vga','DisplayPort':'displayport','RJ45':'rj45','Jack 3,5 mm':'jack','USB-A':'usb-a','USB-B':'usb-b','USB-C':'usb-c','Mini-USB':'mini-usb','Micro-USB':'micro-usb','DC-IN':'dc-in','ram':'ram','rom':'rom','ssd':'ssd','hdd-internal':'hdd-internal','hdd-external':'hdd-external','usb':'usb','cpu':'cpu'};
+ const file=lookup[name];
+ return file ? `<div class="tech-photo"><img src="./images/${file}.webp" alt="Observe cet élément informatique" loading="eager"/></div>` : '';
+}
+function computerSvg():string{
+ return `<div class="computer-diagram" role="group" aria-label="Composants stylisés d’une unité centrale"><div class="pc-frame"><div class="motherboard"><span class="circuit-line l1"></span><span class="circuit-line l2"></span><button type="button" data-component="CPU" class="pc-part cpu"><span>▣</span><small>CPU</small></button><button type="button" data-component="RAM" class="pc-part ram"><span>▥▥</span><small>RAM</small></button><button type="button" data-component="SSD" class="pc-part ssd"><span>▤</span><small>SSD</small></button><button type="button" data-component="Ventilateur" class="pc-part fan"><span>✺</span><small>Ventilateur</small></button></div></div></div>`;
+}
+function keyboardHtml():string{
+ const keyrows=[
+ [['²',''],['&','1'],['é','2'],['"','3'],["'",'4'],['(','5'],['-','6'],['è','7'],['_','8'],['ç','9'],['à','0'],[')','°'],['=','+'],['⌫','']],
+ [['Tab',''],['A',''],['Z',''],['E',''],['R',''],['T',''],['Y',''],['U',''],['I',''],['O',''],['P',''],['^','¨'],['$','£'],['Entrée','']],
+ [['Verr Maj',''],['Q',''],['S',''],['D',''],['F',''],['G',''],['H',''],['J',''],['K',''],['L',''],['M',''],['ù','%'],['*','µ']],
+ [['Maj',''],['<','>'],['W',''],['X',''],['C',''],['V',''],['B',''],['N',''],[',','?'],[';','.'],[':','/'],['!','§'],['Maj','']],
+ [['Ctrl',''],['Win',''],['Alt',''],['Espace',''],['AltGr',''],['Menu',''],['Ctrl','']]
+ ];
+ return `<div class="keyboard-scroll"><div class="virtual-keyboard fr-fr" role="group" aria-label="Clavier entier AZERTY français France">${keyrows.map(row=>`<div class="key-row">${row.map(([key,sub])=>{let id=key==='AltGr'?'AltGr':key==='à'?'0':key;const long=key.length>3?'wide-key':'';return `<button type="button" data-key="${h(id)}" class="virtual-key ${long}" aria-label="Touche ${h(id)}">${h(key)}${sub?`<small>${h(sub)}</small>`:''}</button>`}).join('')}</div>`).join('')}</div></div>`;
+}
+function shell(content: string) {
+ app.innerHTML = `<div class="world"><div class="orbs" aria-hidden="true"><i></i><i></i><i></i></div><div class="layout"><header class="topbar"><button class="brand" data-action="home" aria-label="Retour à l'accueil"><span class="brand-mark">P</span><span><strong>LE MONDE DE PIXEL</strong><small>Apprendre en jouant</small></span></button><div class="top-right"><span class="mission-pill">✨ Mission 01</span><span class="star-count" title="Rubriques réussies">⭐ ${countStars()} / 5</span></div></header>${content}<footer class="footer">Mission 1 · Mon poste de travail <span>•</span> Formation numérique <span>•</span> Sans publicité</footer></div></div>`;
+ app.querySelector<HTMLButtonElement>('[data-action="home"]')?.addEventListener('click', home);
+}
+function home() {
 
-q('Reconnais le connecteur illustré.',['HDMI','VGA','USB-C','RJ45'],0,'HDMI transmet une image et souvent le son.',{kind:'visual',visual:'hdmi'}),
-q('Reconnais le connecteur illustré.',['HDMI','VGA','USB-A','DisplayPort'],1,'VGA possède 15 broches en trois rangées.',{kind:'visual',visual:'vga'}),
-q('Reconnais le connecteur illustré.',['DisplayPort','HDMI','Mini-USB','RJ45'],0,'DisplayPort possède un angle caractéristique.',{kind:'visual',visual:'displayport'}),
-q('Reconnais le connecteur illustré.',['Jack 3,5 mm','RJ45','USB-B','HDMI'],1,'RJ45 est utilisé pour le réseau Ethernet.',{kind:'visual',visual:'rj45'}),
-q('Reconnais le connecteur illustré.',['Jack 3,5 mm','DC-IN','USB-C'],0,'Le jack audio est une prise ronde.',{kind:'visual',visual:'jack'}),
-q('Reconnais le connecteur illustré.',['USB-A','USB-B','USB-C'],0,'USB-A possède une forme rectangulaire.',{kind:'visual',visual:'usb-a'}),
-q('Reconnais le connecteur illustré.',['USB-B','USB-C','Micro-USB'],1,'USB-C est ovale et réversible.',{kind:'visual',visual:'usb-c'}),
-q('Reconnais le connecteur illustré.',['USB-A','USB-B','USB-C'],1,'USB-B est généralement de forme presque carrée.',{kind:'visual',visual:'usb-b'}),
-q('Reconnais le connecteur illustré.',['Mini-USB','Micro-USB','USB-C'],0,'Le Mini-USB est un ancien petit format.',{kind:'visual',visual:'mini-usb'}),
-q('Reconnais le connecteur illustré.',['Mini-USB','Micro-USB','HDMI'],1,'Le Micro-USB est plus plat et plus petit.',{kind:'visual',visual:'micro-usb'}),
-q('Reconnais le connecteur illustré.',['DC-IN','Jack 3,5 mm','RJ45'],0,'DC-IN désigne une prise d’alimentation.',{kind:'visual',visual:'dc-in'})
-]},
-{id:'keyboard',icon:'⌨️',title:'Clavier AZERTY français',subtitle:'Choisir les touches, puis saisir des lettres et des mots',color:'#dc5fa6',items:[
-q('Quelle touche permet d’écrire une majuscule temporaire ?',['Maj','Entrée','Tab'],0,'Maintiens Maj et appuie sur la lettre.',{kind:'keyboard',target:'Maj'}),
-q('Quelles touches permettent de copier ?',['Ctrl + C','Ctrl + V','Ctrl + Z'],0,'Ctrl + C copie.',{kind:'keyboard',target:'Ctrl + C'}),
-q('Quelles touches permettent de coller ?',['Ctrl + C','Ctrl + V','Ctrl + A'],1,'Ctrl + V colle.',{kind:'keyboard',target:'Ctrl + V'}),
-q('Quelles touches permettent de saisir @ sur AZERTY français France ?',['Alt Gr + 0','Ctrl + A','Maj + 2'],0,'Alt Gr + 0 permet de saisir @.',{kind:'keyboard',target:'Alt Gr + 0'}),
-q('Quelles touches permettent de saisir € ?',['Alt Gr + E','Maj + E','Ctrl + E'],0,'Alt Gr + E permet de saisir €.',{kind:'keyboard',target:'Alt Gr + E'}),
-q('Écris la lettre « é ».',['é'],0,'La lettre attendue est é.',{kind:'type',target:'é'}),
-q('Écris la lettre « ç ».',['ç'],0,'La lettre attendue est ç.',{kind:'type',target:'ç'}),
-q('Écris le mot « pixel ».',['pixel'],0,'Mot attendu : pixel.',{kind:'type',target:'pixel'}),
-q('Écris le mot « clavier ».',['clavier'],0,'Mot attendu : clavier.',{kind:'type',target:'clavier'}),
-q('Écris le mot « ordinateur ».',['ordinateur'],0,'Mot attendu : ordinateur.',{kind:'type',target:'ordinateur'}),
-q('Écris le mot « école ».',['école'],0,'Mot attendu : école.',{kind:'type',target:'école'})
-]}];
-const app=document.querySelector<HTMLDivElement>('#app')!;
-let topic:Topic|null=null;let ix=0;let score=0;let selected:number[]=[];let answered=false;let typed='';let saved:Record<string,number>={};
-try{saved=JSON.parse(localStorage.getItem('pixel-m1-scores')||'{}') as Record<string,number>}catch{saved={}}
-const esc=(s:string):string=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
-const wrap=(inner:string)=>{app.innerHTML='<main class="shell"><header class="top"><div class="brand"><span class="pico">P</span><span>Le Monde de Pixel<small>Mission 1 · Mon poste de travail</small></span></div><span class="pill">⭐ '+Object.values(saved).filter(x=>x>=.75).length+'/5 étoiles</span></header>'+inner+'<footer class="footer">Un jeu pédagogique de formation numérique · Progression enregistrée sur cet appareil</footer></main>'};
-function home(){topic=null;wrap('<section class="hero"><div class="eyebrow">MISSION 01 • EXPLORATION NUMÉRIQUE</div><h1>Prêt à maîtriser ton poste de travail ?</h1><p>Explore cinq zones, relève les défis et aide Pixel à retrouver ses compétences. Une question à la fois, à ton rythme !</p><div class="pixel-hero-figure"><svg viewBox="0 0 220 230" role="img" aria-label="Pixel, la mascotte bleue"><defs><linearGradient id="pgrad" x2="1" y2="1"><stop stop-color="#87dcff"/><stop offset="1" stop-color="#2671df"/></linearGradient></defs><path d="M62 136L41 165M162 136L184 165M87 182L77 210M141 182L152 210" stroke="#233557" stroke-width="9" stroke-linecap="round"/><rect x="44" y="30" width="132" height="153" rx="18" stroke="#2359a9" stroke-width="5" fill="url(#pgrad)"/><path d="M76 35v145M110 35v145M143 35v145M48 82h124M48 128h124" stroke="white" opacity=".18" stroke-width="3"/><ellipse cx="85" cy="91" rx="11" ry="13" fill="white"/><ellipse cx="138" cy="91" rx="11" ry="13" fill="white"/><circle cx="86" cy="94" r="5" fill="#213a66"/><circle cx="138" cy="94" r="5" fill="#213a66"/><path d="M80 130Q111 158 142 130" fill="none" stroke="#213a66" stroke-width="7" stroke-linecap="round"/></svg></div></section><h2 class="section-title">Choisis une zone</h2><section class="grid">'+topics.map((t,i)=>'<button class="tile" data-topic="'+i+'"><span class="emoji">'+t.icon+'</span><strong>'+esc(t.title)+'</strong><p>'+esc(t.subtitle)+'</p><span class="foot">'+(saved[t.id]!==undefined?'Meilleur score : '+Math.round(saved[t.id]*100)+' %':'Commencer le défi')+' · '+t.items.length+' questions</span></button>').join('')+'</section>');document.querySelectorAll<HTMLButtonElement>('[data-topic]').forEach(b=>b.addEventListener('click',()=>start(Number(b.dataset.topic))))}
-function start(i:number){topic=topics[i];ix=0;score=0;selected=[];answered=false;typed='';render()}
-function portImage(id:string){const frame=(shape:string)=>'<div class="custom-port-visual"><svg viewBox="0 0 460 275" role="img" aria-label="Illustration détaillée du connecteur" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="pmetal" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#f5f8fd"/><stop offset=".3" stop-color="#93a5bb"/><stop offset=".55" stop-color="#4e6076"/><stop offset=".8" stop-color="#c4ceda"/><stop offset="1" stop-color="#e6edf5"/></linearGradient><linearGradient id="pblack" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#38465b"/><stop offset="1" stop-color="#0b1625"/></linearGradient><filter id="pshadow"><feDropShadow dx="3" dy="10" stdDeviation="9" flood-color="#254568" flood-opacity=".3"/></filter></defs><rect width="460" height="275" rx="22" fill="#eff7ff"/><ellipse cx="230" cy="221" rx="136" ry="21" fill="#6d9dd0" opacity=".18"/><g filter="url(#pshadow)">'+shape+'</g></svg><span class="custom-port-caption">Observe la forme et les détails de la fiche.</span></div>';
-const shell=(x:number,y:number,w:number,h:number,r:number=13)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+r+'" fill="url(#pblack)" stroke="#607086" stroke-width="4"/>';
-const pins=(n:number,x:number,y:number,gap:number,wide:number=7)=>Array.from({length:n},(_,i)=>'<rect x="'+(x+i*gap)+'" y="'+y+'" width="'+wide+'" height="15" rx="2" fill="#e4b45b" stroke="#9e7331" stroke-width="1"/>').join('');
-const shapes:Record<string,string>={
-'hdmi':shell(87,56,286,153,25)+'<path d="M124 97H336L354 143L319 185H141L106 143Z" fill="url(#pmetal)" stroke="#283b53" stroke-width="9"/><path d="M150 116H312L329 145L309 168H151L131 145Z" fill="#151e2c"/>'+pins(12,162,133,11),
-'vga':shell(75,60,310,150,20)+'<path d="M133 81H327L352 179H108Z" fill="url(#pmetal)" stroke="#51627c" stroke-width="8"/><path d="M150 108H310L323 157H137Z" fill="#2366af" stroke="#224670" stroke-width="5"/>'+Array.from({length:15},(_,i)=>'<circle cx="'+(167+i%5*27+Math.floor(i/5)%2*6)+'" cy="'+(120+Math.floor(i/5)*15)+'" r="5" fill="#e4bc61" stroke="#b68836"/>').join('')+'<circle cx="92" cy="139" r="13" fill="#bfcbd8" stroke="#6d7d8d" stroke-width="4"/><circle cx="368" cy="139" r="13" fill="#bfcbd8" stroke="#6d7d8d" stroke-width="4"/>',
-'displayport':shell(89,57,282,151,19)+'<path d="M127 90H306L345 129V183H127Z" fill="url(#pmetal)" stroke="#35465a" stroke-width="9"/><path d="M144 109H296L326 139V168H144Z" fill="#121d2b" stroke="#586679" stroke-width="3"/>'+pins(15,155,135,10,5),
-'rj45':shell(95,50,270,166,18)+'<path d="M160 72H300V93H331V187H129V93H160Z" fill="url(#pmetal)" stroke="#384b63" stroke-width="8"/><path d="M153 113H307V175H153Z" fill="#172436"/>'+pins(8,160,112,19,12),
-'jack':'<path d="M140 70H310V198H140Z" fill="url(#pblack)" stroke="#54677f" stroke-width="6"/><circle cx="226" cy="132" r="71" fill="url(#pmetal)" stroke="#27394d" stroke-width="8"/><circle cx="226" cy="132" r="47" fill="#182434" stroke="#69798b" stroke-width="7"/><circle cx="226" cy="132" r="20" fill="#060d17"/>',
-'usb-a':shell(107,61,246,145,21)+'<rect x="137" y="89" width="186" height="88" rx="8" fill="url(#pmetal)" stroke="#203550" stroke-width="7"/><rect x="152" y="107" width="156" height="53" rx="3" fill="#1778d2"/><rect x="175" y="120" width="35" height="23" fill="#bfc8d7"/><rect x="249" y="120" width="35" height="23" fill="#bfc8d7"/>',
-'usb-b':shell(105,56,250,160,18)+'<path d="M155 82H305L329 116V185H131V116Z" fill="url(#pmetal)" stroke="#263a55" stroke-width="9"/><path d="M165 112H295L305 130V166H155V130Z" fill="#171e2b"/><rect x="201" y="127" width="58" height="29" rx="3" fill="#d0dbe6"/>',
-'usb-c':shell(95,69,270,125,25)+'<rect x="116" y="100" width="228" height="75" rx="38" fill="url(#pmetal)" stroke="#293e55" stroke-width="9"/><rect x="137" y="119" width="186" height="38" rx="19" fill="#101a28"/>'+pins(12,168,132,11,6),
-'mini-usb':shell(90,61,280,150,20)+'<path d="M135 94H325L347 150L320 184H140L113 150Z" fill="url(#pmetal)" stroke="#33475f" stroke-width="8"/><path d="M150 119H310L325 150L306 167H154L135 150Z" fill="#171f2e"/>'+pins(5,188,133,18,10),
-'micro-usb':shell(90,69,280,130,20)+'<path d="M124 110H336L319 179H141Z" fill="url(#pmetal)" stroke="#33465e" stroke-width="8"/><path d="M148 130H312L303 160H157Z" fill="#152132"/>'+pins(5,177,138,23,11),
-'dc-in':'<rect x="142" y="60" width="176" height="148" rx="25" fill="url(#pblack)" stroke="#566779" stroke-width="7"/><circle cx="230" cy="133" r="64" fill="url(#pmetal)" stroke="#26384c" stroke-width="7"/><circle cx="230" cy="133" r="43" fill="#111c2c"/><circle cx="230" cy="133" r="16" fill="#c9d4df" stroke="#718397" stroke-width="4"/>'
-};return frame(shapes[id]||shapes['usb-a'])}
-function pictogram(id:string){const shapes:Record<string,string>={'usb-a':'<rect x="43" y="30" width="114" height="75" rx="9"/><rect x="58" y="44" width="84" height="47" rx="3" fill="#dce6f1"/><rect x="72" y="55" width="17" height="12" fill="#253e58"/><rect x="111" y="55" width="17" height="12" fill="#253e58"/>','usb-c':'<rect x="25" y="43" width="150" height="57" rx="28"/><rect x="42" y="55" width="116" height="33" rx="15" fill="#dce6f1"/>','hdmi':'<path d="M40 42H160L145 101H55Z"/><path d="M56 55H144L135 87H65Z" fill="#dce6f1"/>','rj45':'<path d="M53 25H147V50H163V103H37V50H53Z"/><rect x="51" y="61" width="98" height="25" fill="#dce6f1"/>'+Array.from({length:8},(_,i)=>'<path d="M'+(61+i*11)+' 66v17" stroke="#7d8fa2"/>').join(''),'vga':'<path d="M45 35H155L143 100H57Z"/><path d="M60 49H140L133 86H67Z" fill="#dce6f1"/>'+Array.from({length:15},(_,i)=>'<circle cx="'+(75+i%5*13)+'" cy="'+(57+Math.floor(i/5)*10)+'" r="3" fill="#425b79"/>').join(''),'jack':'<circle cx="100" cy="69" r="46"/><circle cx="100" cy="69" r="20" fill="#dce6f1"/>','displayport':'<path d="M38 35H145L163 53V100H38Z"/><path d="M52 48H140L151 59V87H52Z" fill="#dce6f1"/>','usb-b':'<path d="M60 29H140L158 51V105H42V51Z"/><path d="M66 46H134L143 57V91H57V57Z" fill="#dce6f1"/>','micro-usb':'<path d="M27 56H173L155 91H45Z"/><path d="M49 65H151L143 80H57Z" fill="#dce6f1"/>','mini-usb':'<path d="M35 39H165L151 98H49Z"/><path d="M56 52H144L135 85H65Z" fill="#dce6f1"/>','dc-in':'<circle cx="100" cy="69" r="42"/><circle cx="100" cy="69" r="21" fill="#dce6f1"/><circle cx="100" cy="69" r="8"/>'};return '<div class="diagram"><svg width="220" height="145" viewBox="0 0 200 140" role="img" aria-label="Schéma de connecteur"><g fill="#5e7894" stroke="#294963" stroke-width="4" stroke-linejoin="round">'+(shapes[id]||shapes['usb-a'])+'</g></svg></div>'}
-const icons=['🧠','▥','💾','🌀'];
-function fullKeyboard(){const rows=[["²","&","é","\"","'","(","-","è","_","ç","à",")","=","⌫"],["Tab","A","Z","E","R","T","Y","U","I","O","P","^","$","Entrée"],["Verr Maj","Q","S","D","F","G","H","J","K","L","M","ù","*"],["Maj","<","W","X","C","V","B","N",",",";","!","Maj"],["Ctrl","Win","Alt","Espace","Alt Gr","Menu","Ctrl"]];return '<div class="keyboard-fr" aria-label="Clavier AZERTY français France">'+rows.map(row=>'<div class="keyboard-row">'+row.map(k=>'<span class="keyboard-key">'+esc(k)+'</span>').join('')+'</div>').join('')+'</div>'}
-function pcPhoto(name:string){const board='<rect x="14" y="13" width="172" height="124" rx="15" fill="#eef8ff"/>';const items:Record<string,string>={
-'RAM':'<path d="M23 54L177 33L184 79L31 100Z" fill="#238355" stroke="#125632" stroke-width="4"/>'+Array.from({length:5},(_,i)=>'<rect x="'+(39+i*26)+'" y="'+(60-i*3)+'" width="18" height="27" rx="3" fill="#152e2c"/>').join('')+'<path d="M40 100l4 11m14-14 4 11m13-14 4 11m13-14 4 11m13-14 4 11m13-14 4 11" stroke="#cfac5f" stroke-width="4"/>',
-'ROM':'<rect x="50" y="27" width="99" height="96" rx="10" fill="#333e55" stroke="#171f31" stroke-width="5"/><rect x="64" y="43" width="72" height="63" rx="5" fill="#58627a"/>'+Array.from({length:6},(_,i)=>'<path d="M37 '+(42+i*12)+'h13M149 '+(42+i*12)+'h13" stroke="#c1ad75" stroke-width="5"/>').join(''),
-'SSD':'<rect x="33" y="24" width="135" height="100" rx="12" fill="#343a47" stroke="#101923" stroke-width="5"/><rect x="49" y="44" width="103" height="60" rx="6" fill="#d3dce9"/><text x="100" y="83" text-anchor="middle" fill="#283f65" font-size="29" font-weight="900">SSD</text>',
-'Processeur':'<rect x="45" y="23" width="110" height="110" rx="8" fill="#217b57" stroke="#13583e" stroke-width="5"/><rect x="60" y="39" width="80" height="78" rx="7" fill="#d9dde2" stroke="#728096" stroke-width="4"/><text x="100" y="85" text-anchor="middle" fill="#4c5967" font-size="27" font-weight="900">CPU</text>',
-'Clé USB':'<rect x="28" y="56" width="113" height="48" rx="11" fill="#2f88dd" stroke="#175492" stroke-width="4"/><rect x="140" y="61" width="39" height="37" rx="4" fill="#ccd4df" stroke="#8997a8" stroke-width="3"/>',
-'Disque dur interne':'<rect x="38" y="18" width="124" height="116" rx="11" fill="#cbd6df" stroke="#7b8999" stroke-width="4"/><circle cx="99" cy="76" r="38" fill="#f4f7fa" stroke="#7d8b99" stroke-width="4"/><circle cx="99" cy="76" r="9" fill="#77899d"/><path d="M99 76l45-26" stroke="#5c6d81" stroke-width="7" stroke-linecap="round"/>',
-'Disque dur externe':'<rect x="47" y="22" width="99" height="105" rx="16" fill="#3e4b5b" stroke="#263747" stroke-width="5"/><rect x="59" y="34" width="76" height="79" rx="9" fill="#65768b"/><path d="M146 92c23 0 22 27 43 27" stroke="#25394e" stroke-width="7" fill="none"/>'
-};return '<svg viewBox="0 0 200 150" role="img" aria-label="Illustration détaillée de '+esc(name)+'">'+board+(items[name]||'')+'</svg>'}
-function render(){if(!topic)return home();const t=topic;const item=t.items[ix];if(!item)return finish();const multi=item.kind==='multi'||Array.isArray(item.answer);const isType=item.kind==='type';const isParts=item.kind==='parts';const block=item.kind==='visual'?portImage(item.visual||'usb-a'):isParts?'<div class="diagram"><div class="parts">'+item.options.map((s,j)=>'<button class="part '+(selected.includes(j)?'on':'')+'" data-select="'+j+'" '+(answered?'disabled':'')+'>'+pcPhoto(s)+'<small>'+esc(s)+'</small></button>').join('')+'</div></div>':item.kind==='keyboard'?fullKeyboard():'';const list=isType?'<input class="field" id="typed" autocomplete="off" spellcheck="false" placeholder="Saisis le caractère ici" value="'+esc(typed)+'" '+(answered?'disabled':'')+'/>':isParts?'': '<div class="options">'+item.options.map((s,j)=>'<button class="opt '+(selected.includes(j)?'selected ':'')+(answered?(correctIndexes(item).includes(j)?'correct':selected.includes(j)?'wrong':''):'')+'" data-select="'+j+'" '+(answered?'disabled':'')+'><span class="marker">'+(multi?(selected.includes(j)?'✓':'□'):String.fromCharCode(65+j))+'</span>'+esc(s)+'</button>').join('')+'</div>';wrap('<div class="game"><button class="back" id="back">← Retour aux zones</button><article class="card"><div class="meta"><span>'+t.icon+' '+esc(t.title)+'</span><span>Question '+(ix+1)+' / '+t.items.length+' · '+score+' pt'+(score>1?'s':'')+'</span></div><div class="bar"><div class="fill" style="width:'+Math.round(ix/t.items.length*100)+'%"></div></div><h1 class="question">'+esc(item.question)+'</h1><div class="hint">'+(multi?'Plusieurs bonnes réponses possibles.':'Choisis la bonne réponse.')+'</div>'+block+list+(answered?'<div class="feedback '+(isCorrect(item)?'ok':'no')+'"><strong>'+(isCorrect(item)?'✅ Bonne réponse !':'💡 À retenir')+'</strong>'+esc(item.why)+'</div>':'')+'<div class="actions">'+(answered?'<button class="primary" id="next">'+(ix===t.items.length-1?'Voir mon résultat':'Question suivante →')+'</button>':'<button class="primary" id="check" '+(isType?!typed.trim():'disabled')+'>'+(multi?'Valider mes choix':'Valider ma réponse')+'</button>')+'</div></article></div>');document.querySelector('#back')?.addEventListener('click',home);document.querySelectorAll<HTMLButtonElement>('[data-select]').forEach(el=>el.addEventListener('click',()=>{const j=Number(el.dataset.select);selected=multi?(selected.includes(j)?selected.filter(x=>x!==j):[...selected,j]):[j];render()}));document.querySelector<HTMLInputElement>('#typed')?.addEventListener('input',e=>{typed=(e.target as HTMLInputElement).value;const b=document.querySelector<HTMLButtonElement>('#check');if(b)b.disabled=!typed.trim()});const check=document.querySelector<HTMLButtonElement>('#check');if(check){check.disabled=isType?!typed.trim():selected.length===0;check.addEventListener('click',()=>{answered=true;if(isCorrect(item))score++;render()})}document.querySelector('#next')?.addEventListener('click',()=>{ix++;selected=[];answered=false;typed='';render()})}
-function correctIndexes(item:Question):number[]{return Array.isArray(item.answer)?item.answer:[item.answer]}
-function isCorrect(item:Question):boolean{if(item.kind==='type')return typed.trim().toLocaleLowerCase('fr-BE')===(item.target||'').toLocaleLowerCase('fr-BE');const a=correctIndexes(item);return selected.length===a.length&&selected.every(x=>a.includes(x))}
-function finish(){if(!topic)return;const t=topic;const pct=score/t.items.length;saved[t.id]=Math.max(pct,saved[t.id]||0);try{localStorage.setItem('pixel-m1-scores',JSON.stringify(saved))}catch{}wrap('<div class="game"><article class="card summary"><div class="trophy">'+(pct>=.75?'🏆':'🌟')+'</div><h2>Zone terminée !</h2><p class="muted">'+esc(t.title)+'</p><h2>'+score+' / '+t.items.length+'</h2><p>'+(pct>=.75?'Bravo ! Tu décroches une étoile pour cette zone.':'Bien joué ! Tu peux recommencer pour décrocher ton étoile (75 %).')+'</p><div class="actions" style="justify-content:center"><button class="secondary" id="retry">Recommencer</button><button class="primary" id="zones">Choisir une autre zone</button></div></article></div>');document.querySelector('#retry')?.addEventListener('click',()=>start(topics.indexOf(t)));document.querySelector('#zones')?.addEventListener('click',home)}
+ const done = categories.filter(c=>saved[c.id]>0).length;
+ shell(`<main><section class="hero"><div class="hero-copy"><div class="eyebrow">TON AVENTURE NUMÉRIQUE</div><h1>Mission 1<span class="title-accent">.</span><br><span>Mon poste de travail</span></h1><p>Aide Pixel à retrouver ses connaissances ! Explore les défis, gagne des étoiles et deviens incollable sur l’ordinateur.</p><div class="hero-stats"><div><strong>5</strong><small>univers à explorer</small></div><div><strong>${questions.length}</strong><small>défis variés</small></div><div><strong>${done}/5</strong><small>univers essayés</small></div></div></div><div class="hero-art"><div class="speech">Prêt·e pour le défi ?</div>${mascot()}<span class="spark s1">✦</span><span class="spark s2">✧</span><span class="spark s3">✳</span><div class="ground"></div></div></section><section class="section-intro"><div><div class="eyebrow">CHOISIS TA RUBRIQUE</div><h2>À toi de jouer !</h2><p>De 8 à 12 défis par rubrique · Tu peux recommencer pour améliorer ton score.</p></div><div class="legend">⭐ Étoile obtenue à partir de 75 %</div></section><div class="category-grid">${categories.map((c,n)=>`<button class="category-card ${c.accent}" data-cat="${c.id}"><span class="card-top"><span class="cat-icon">${c.icon}</span><span class="cat-number">0${n+1}</span></span><span class="cat-title">${h(c.title)}</span><span class="cat-subtitle">${h(c.subtitle)}</span><span class="cat-bottom"><span class="card-progress">${saved[c.id] ? `${saved[c.id]}/${questions.filter(q=>q.category===c.id).length} · ${saved[c.id] >= Math.ceil(questions.filter(q=>q.category===c.id).length*.75) ? '⭐ Réussi' : 'À améliorer'}` : 'Pas encore joué'}</span><span class="arrow-circle">↗</span></span></button>`).join('')}</div></main>`);
+ app.querySelectorAll<HTMLButtonElement>('[data-cat]').forEach(b=>b.addEventListener('click',()=>start(b.dataset.cat as CategoryId)));
+}
+function start(category: CategoryId) { active=category;index=0;score=0; resetQuestion(); renderQuestion(); }
+function resetQuestion(){answered=false;selected=new Set();matched=[];chosenLeft=null;arranged=[];typed='';lastCorrect=false;visualChoice='';}
+function options(q: Question): string {
+ if(q.type==='visual')return `<div class="illustration-panel">${portSvg(q.visual!)}</div><div class="options">${q.choices!.map((v,i)=>`<button class="option" data-opt="${i}" aria-pressed="false"><span class="option-letter">${'ABCD'[i]}</span><span>${h(v)}</span><span class="option-check">✓</span></button>`).join('')}</div>`;
+ if(q.type==='board')return `<p class="diagram-guide">Touche l’emplacement correspondant au composant demandé.</p>${computerSvg()}<div id="board-status" class="selection-note">Sélectionne une zone du schéma.</div>`;
+ if(q.type==='azerty')return `<p class="diagram-guide">Choisis les touches à presser simultanément.</p>${keyboardHtml()}<div id="board-status" class="selection-note">Aucune touche choisie.</div>`;
+ if(q.type==='choice'||q.type==='multi')return `<div class="options">${q.choices!.map((v,i)=>`<button class="option" data-opt="${i}" aria-pressed="false"><span class="option-letter">${'ABCD'[i]}</span><span>${h(v)}</span><span class="option-check">✓</span></button>`).join('')}</div>`;
+ if(q.type==='input') return `${keyboardHtml()}<div class="input-wrap"><label for="answer-input">Ta réponse</label><input id="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Écris ta réponse ici…" maxlength="60"/><span>Respecte les accents et les caractères demandés.</span></div>`;
+ if(q.type==='pair')return `<div class="match-hint">1. Touche un élément à gauche, puis sa correspondance à droite.</div><div class="match-grid"><div class="match-col">${q.pairs!.map(([a],i)=>`<button class="match-item" data-left="${i}">${h(a)}</button>`).join('')}</div><div class="match-col">${[...q.pairs!].reverse().map(([,b],i)=>`<button class="match-item" data-right="${i}">${h(b)}</button>`).join('')}</div></div><div class="selection-note" id="selection-note">${q.pairs!.length} associations à trouver.</div>`;
+ return `<div class="match-hint">Appuie sur les éléments dans le bon ordre.</div><div class="order-preview" id="order-preview">Ton ordre apparaîtra ici…</div><div class="order-options">${[...q.items!].reverse().map((v,i)=>`<button class="order-item" data-order="${i}">${h(v)} <span>＋</span></button>`).join('')}</div><button class="reset-order" data-action="clear-order">↺ Recommencer l’ordre</button>`;
+}
+function renderQuestion(){
+ const q=current();const n=list().length;const progress=Math.round(index/n*100);
+ shell(`<main class="game-main"><div class="game-head"><button class="back-button" data-action="back">← Les rubriques</button><div class="mini-score">⭐ ${score} point${score>1?'s':''}</div></div><div class="challenge-banner ${cat().accent}"><span class="banner-icon">${cat().icon}</span><div><span class="eyebrow">RUBRIQUE ${categories.findIndex(c=>c.id===active)+1} / 5</span><h2>${h(cat().title)}</h2></div><span class="banner-pixel">✦</span></div><div class="progress-label"><span>Question <strong>${index+1}</strong> sur <strong>${n}</strong></span><span>${progress}% terminé</span></div><div class="progress-track"><div style="width:${progress}%"></div></div><section class="question-card"><div class="question-header"><span class="type-tag">${({visual:'Reconnaissance visuelle',board:'Schéma interactif',azerty:'Clavier interactif',choice:'Choix unique',multi:'Plusieurs réponses',pair:'Associations',input:'À écrire',order:'Remettre en ordre'} as const)[q.type]}</span><span class="question-decoration">✳</span></div><h1>${h(q.prompt)}</h1>${q.caption?`<p class="question-caption">${h(q.caption)}</p>`:''}${options(q)}<div id="feedback" aria-live="polite"></div><div class="question-actions"><span class="action-hint">${q.type==='multi'?'Plusieurs bonnes réponses possibles':q.type==='pair'?'Associe tous les éléments':q.type==='order'?'Chaque élément compte': 'Prends le temps de réfléchir'}</span><button class="primary-button" id="check" disabled>Vérifier ma réponse <span>→</span></button></div></section><div class="game-tip">💡 <span><strong>Le conseil de Pixel :</strong> Une erreur, c’est une occasion d’apprendre !</span></div></main>`);
+ app.querySelector('[data-action="back"]')?.addEventListener('click',home);
+ const check=app.querySelector<HTMLButtonElement>('#check')!;
+ if(q.type==='choice'||q.type==='multi'||q.type==='visual')app.querySelectorAll<HTMLButtonElement>('[data-opt]').forEach(btn=>btn.addEventListener('click',()=>{
+ if(answered)return;const val=q.choices![Number(btn.dataset.opt)];if(q.type==='choice'||q.type==='visual')selected=new Set([val]);else if(selected.has(val))selected.delete(val);else selected.add(val);
+ app.querySelectorAll<HTMLButtonElement>('[data-opt]').forEach(b=>{const on=selected.has(q.choices![Number(b.dataset.opt)]);b.classList.toggle('selected',on);b.setAttribute('aria-pressed',String(on));});check.disabled=selected.size===0;
+ }));
+ if(q.type==='board')app.querySelectorAll<HTMLButtonElement>('[data-component]').forEach(b=>b.addEventListener('click',()=>{if(answered)return;visualChoice=b.dataset.component!;app.querySelectorAll('[data-component]').forEach(x=>x.classList.toggle('chosen',x===b));app.querySelector('#board-status')!.textContent=`Zone choisie : ${visualChoice}`;check.disabled=false;}));
+ if(q.type==='azerty')app.querySelectorAll<HTMLButtonElement>('[data-key]').forEach(b=>b.addEventListener('click',()=>{if(answered)return;const key=b.dataset.key!;if(selected.has(key))selected.delete(key);else selected.add(key);b.classList.toggle('chosen',selected.has(key));app.querySelector('#board-status')!.textContent=selected.size?`Touches : ${[...selected].join(' + ')}`:'Aucune touche choisie.';check.disabled=selected.size===0;}));
+ if(q.type==='input')app.querySelector<HTMLInputElement>('#answer-input')?.addEventListener('input',e=>{typed=(e.target as HTMLInputElement).value;check.disabled=!typed.trim();});
+ if(q.type==='pair'){
+ const left=app.querySelectorAll<HTMLButtonElement>('[data-left]');const right=app.querySelectorAll<HTMLButtonElement>('[data-right]');
+ left.forEach(b=>b.addEventListener('click',()=>{if(answered||b.disabled)return;chosenLeft=q.pairs![Number(b.dataset.left)][0];left.forEach(x=>x.classList.remove('selected'));b.classList.add('selected');}));
+ right.forEach(b=>b.addEventListener('click',()=>{if(answered||b.disabled||!chosenLeft)return;const val=[...q.pairs!].reverse()[Number(b.dataset.right)][1];matched.push([chosenLeft,val]);const l=[...left].find(x=>q.pairs![Number(x.dataset.left)][0]===chosenLeft)!;l.disabled=true;l.classList.remove('selected');l.classList.add('paired');b.disabled=true;b.classList.add('paired');chosenLeft=null;app.querySelector('#selection-note')!.textContent=`${matched.length}/${q.pairs!.length} associations réalisées`;check.disabled=matched.length!==q.pairs!.length;}));
+ }
+ if(q.type==='order'){
+ const buttons=app.querySelectorAll<HTMLButtonElement>('[data-order]');buttons.forEach(b=>b.addEventListener('click',()=>{if(answered||b.disabled)return;arranged.push([...q.items!].reverse()[Number(b.dataset.order)]);b.disabled=true;b.classList.add('paired');app.querySelector('#order-preview')!.textContent=arranged.map((a,i)=>`${i+1}. ${a}`).join('  →  ');check.disabled=arranged.length!==q.items!.length;}));
+ app.querySelector('[data-action="clear-order"]')?.addEventListener('click',()=>{arranged=[];buttons.forEach(b=>{b.disabled=false;b.classList.remove('paired');});app.querySelector('#order-preview')!.textContent='Ton ordre apparaîtra ici…';check.disabled=true;});
+ }
+ check.addEventListener('click',()=>answered?next():validate());
+}
+const normalize = (s: string) => s.normalize('NFC').trim().toLocaleLowerCase('fr-FR').replace(/\s+/g,' ');
+function validate(){
+ if(answered)return;const q=current();if(q.type==='choice'||q.type==='multi'||q.type==='visual')lastCorrect=selected.size===q.correct!.length&&q.correct!.every(v=>selected.has(v));
+ else if(q.type==='board')lastCorrect=visualChoice===q.target;
+ else if(q.type==='azerty'){const keys=q.target!.split(' + ').map(v=>v==='AltGr'?'AltGr':v);lastCorrect=selected.size===keys.length&&keys.every(v=>selected.has(v));}
+ else if(q.type==='input')lastCorrect=q.accepted!.some(v=>normalize(v)===normalize(typed));
+ else if(q.type==='pair')lastCorrect=matched.length===q.pairs!.length&&matched.every(([a,b])=>q.pairs!.some(([x,y])=>x===a&&y===b));
+ else lastCorrect=arranged.join('\u0000')===q.correct!.join('\u0000');
+ answered=true;if(lastCorrect)score++;
+ app.querySelectorAll<HTMLButtonElement>('.option,.match-item,.order-item,.reset-order,[data-component],[data-key]').forEach(b=>{b.disabled=true;});
+ app.querySelector<HTMLInputElement>('#answer-input')?.setAttribute('disabled','true');
+ if(q.type==='choice'||q.type==='multi'||q.type==='visual')app.querySelectorAll<HTMLButtonElement>('.option').forEach(b=>{const val=q.choices![Number(b.dataset.opt)];if(q.correct!.includes(val))b.classList.add('right-answer');else if(selected.has(val))b.classList.add('wrong-answer');});
+ const answer=q.type==='board'||q.type==='azerty'?`<div class="solution">Réponse : ${h(q.target!)}</div>`:q.type==='choice'||q.type==='multi'||q.type==='visual'?`<div class="solution">Réponse${q.correct!.length>1?'s':''} : ${q.correct!.map(h).join(' · ')}</div>`:q.type==='input'?`<div class="solution">Réponse : ${h(q.accepted![0])}</div>`:'';
+ app.querySelector('#feedback')!.innerHTML=`<div class="feedback ${lastCorrect?'success':'error'}"><strong>${lastCorrect?'🎉 Bien joué !':'💪 Continue, tu progresses !'}</strong><p>${h(q.explanation)}</p>${!lastCorrect?answer:''}</div>`;
+ const check=app.querySelector<HTMLButtonElement>('#check')!;check.disabled=false;check.innerHTML=index===list().length-1?'Voir mon résultat <span>→</span>':'Question suivante <span>→</span>';
+ app.querySelector('.action-hint')!.textContent=lastCorrect?'+1 point gagné !':'Tu peux retenter ce défi plus tard.';
+}
+function next(){if(index<list().length-1){index++;resetQuestion();renderQuestion();}else finish();}
+function finish(){saved[active]=Math.max(saved[active],score);try{localStorage.setItem(storageKey,JSON.stringify(saved));}catch{}
+ const success=score>=Math.ceil(list().length*.75);const detail=score===list().length?'Parfait ! Toutes les réponses sont correctes.':success?'Super ! Tu maîtrises bien cette rubrique.':'Tu as appris plein de choses ! Rejoue pour gagner ton étoile.';
+ shell(`<main class="result-main"><section class="result-card"><div class="result-art">${mascot()}<div class="result-spark">${success?'⭐':'✨'}</div></div><div class="eyebrow">DÉFI TERMINÉ</div><h1>${success?'Mission accomplie !':'Belle exploration !'}</h1><p class="result-subtitle">${h(detail)}</p><div class="score-circle"><strong>${score}<small>/ ${list().length}</small></strong><span>bonnes réponses</span></div><div class="result-chip">${cat().icon} ${h(cat().title)} ${success?'· ⭐ Étoile débloquée':'· Encore un effort !'}</div><div class="result-buttons"><button class="secondary-button" data-action="replay">↻ Rejouer</button><button class="primary-button" data-action="menu">Autres rubriques →</button></div></section></main>`);
+ app.querySelector('[data-action="replay"]')?.addEventListener('click',()=>start(active));app.querySelector('[data-action="menu"]')?.addEventListener('click',home);
+}
 home();
