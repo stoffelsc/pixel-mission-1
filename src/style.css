@@ -19,3 +19,6 @@
 .real-port-photo img{display:block;width:100%;height:250px;object-fit:contain;background:#fff;padding:7px}
 .photo-credit{font-size:11px;color:#7184a0;padding:5px 8px;text-align:center}
 @media(max-width:520px){.real-port-photo img{height:210px}}
+
+/* Mission 1 : visuels techniques originaux et interface élève */
+.custom-port-visual{background:linear-gradient(140deg,#f3faff,#eaf1ff);border:2px solid #d6e8ff;border-radius:20px;padding:8px;margin:14px 0;text-align:center}.custom-port-visual svg{display:block;width:100%;max-width:470px;max-height:275px;margin:auto}.custom-port-caption{display:block;color:#516e92;font-size:13px;font-weight:700;padding:4px 0 8px}.card{border-radius:22px}.opt{min-height:65px;font-size:clamp(14px,1.8vw,17px);border-width:2px}.question{font-weight:900}.tile{min-height:170px;border:2px solid #e2ebff}.tile .emoji{font-size:38px}.top{margin-bottom:14px}@media(max-width:540px){.custom-port-visual svg{max-height:225px}.hero{padding:18px}.tile{padding:14px}.opt{min-height:55px}}
