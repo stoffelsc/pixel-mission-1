@@ -4,67 +4,63 @@ type Question={question:string;options:string[];answer:number|number[];why:strin
 type Topic={id:string;icon:string;title:string;subtitle:string;color:string;items:Question[]};
 const q=(question:string,options:string[],answer:number|number[],why:string,extra:Partial<Question>={}):Question=>({question,options,answer,why,...extra});
 const topics:Topic[]=[
-{id:'hardware',icon:'🖥️',title:'Matériel et logiciels',subtitle:'Reconnaître les éléments de l’ordinateur',color:'#3f86e7',items:[
-q('Qu’appelle-t-on le hardware ?', ['Les programmes','Les éléments matériels','Les fichiers dans le cloud'],1,'Le hardware désigne les composants physiques de l’ordinateur.'),
-q('Parmi ces éléments, lesquels sont des logiciels ?', ['Windows','Clavier','Scratch','Souris'],[0,2],'Windows est un système d’exploitation et Scratch est un logiciel.',{kind:'multi'}),
-q('Quel élément exécute les instructions des programmes ?', ['Le processeur (CPU)','L’écran','Le câble HDMI'],0,'Le processeur effectue les calculs et exécute les instructions.'),
-q('Quel est le rôle principal de la RAM ?', ['Garder tous les fichiers à vie','Stocker provisoirement les données utilisées','Produire du son'],1,'La RAM est une mémoire de travail temporaire.'),
-q('Quel composant contient généralement le système d’exploitation et les fichiers ?', ['Le SSD ou disque dur','Le ventilateur','L’alimentation'],0,'Le stockage conserve les fichiers même lorsque l’ordinateur est éteint.'),
-q('Lequel de ces éléments est un système d’exploitation ?', ['Microsoft Word','Windows','Google Chrome'],1,'Windows gère le fonctionnement de l’ordinateur et permet d’utiliser les logiciels.'),
-q('À quoi sert l’alimentation (PSU) ?', ['Fournir de l’électricité aux composants','Afficher les images','Sauvegarder les documents'],0,'Le bloc d’alimentation fournit l’énergie aux composants.'),
-q('Pourquoi l’ordinateur a-t-il besoin d’un ventilateur ?', ['Pour augmenter la mémoire','Pour refroidir les composants','Pour capter Internet'],1,'Le ventilateur aide à évacuer la chaleur.'),
-q('La ROM conserve généralement des informations même sans alimentation.', ['Vrai','Faux'],0,'La ROM est une mémoire non volatile.'),
-q('Quel logiciel sert principalement à rédiger un document ?', ['Word','Le processeur','Le SSD'],0,'Word est un logiciel de traitement de texte.')
+{id:'hardware',icon:'🖥️',title:'Hardware / Software',subtitle:'Reconnaître ce qui est matériel ou logiciel',color:'#3f86e7',items:[
+q('Que signifie hardware ?',['Les éléments matériels','Les logiciels','Les fichiers'],0,'Hardware signifie matériel informatique.'),
+q('Que signifie software ?',['Les périphériques','Les programmes et applications','Les câbles'],1,'Software signifie logiciel.'),
+q('Quels éléments sont du hardware ?',['Clavier','Windows','Écran','Souris'],[0,2,3],'Ces objets physiques sont du matériel.',{kind:'multi'}),
+q('Quels éléments sont du software ?',['Scratch','Imprimante','Microsoft Word','Windows'],[0,2,3],'Scratch, Word et Windows sont des logiciels.',{kind:'multi'}),
+q('Un navigateur Internet est…',['Du hardware','Du software'],1,'Un navigateur est un programme.'),
+q('Un écran tactile est…',['Du hardware','Du software'],0,'C’est un appareil physique.'),
+q('Quel exemple est un logiciel ?',['Clé USB','Paint','Webcam'],1,'Paint est un logiciel.'),
+q('Quel exemple est du matériel ?',['Google Chrome','PowerPoint','Casque audio'],2,'Le casque est un objet matériel.')
 ]},
-{id:'parts',icon:'🧩',title:'À l’intérieur du PC',subtitle:'Identifier les composants sur un schéma',color:'#8b65d9',items:[
-q('Appuie sur le processeur (CPU).',['CPU','RAM','SSD','Ventilateur'],0,'Le CPU réalise les calculs.',{kind:'parts'}),
-q('Appuie sur la mémoire vive.',['CPU','RAM','SSD','Ventilateur'],1,'La RAM contient temporairement les données utilisées.',{kind:'parts'}),
-q('Appuie sur le dispositif de stockage.',['CPU','RAM','SSD','Ventilateur'],2,'Le SSD stocke durablement les fichiers.',{kind:'parts'}),
-q('Appuie sur le composant qui refroidit.',['CPU','RAM','SSD','Ventilateur'],3,'Le ventilateur évacue la chaleur.',{kind:'parts'}),
-q('Quand l’ordinateur s’éteint, les données non enregistrées dans la RAM…',['Restent toujours','Peuvent disparaître','Sont imprimées'],1,'La RAM est volatile.'),
-q('Quel équipement conserve les données durablement ?', ['SSD','RAM','Ventilateur'],0,'Le SSD conserve les données hors tension.'),
-q('Le SSD et le HDD ont principalement quelle fonction commune ?', ['Refroidir','Stocker les données','Faire fonctionner le clavier'],1,'SSD et HDD sont deux technologies de stockage.'),
-q('Que signifie CPU ?', ['Unité centrale de traitement','Carte de son','Câble de réseau'],0,'Le CPU est le processeur de l’ordinateur.')
+{id:'parts',icon:'🧩',title:'RAM, ROM et stockage',subtitle:'7 éléments : RAM, ROM, SSD, HDD interne/externe, clé USB, processeur',color:'#8b65d9',items:[
+q('Quel élément sert de mémoire de travail temporaire ?',['RAM','ROM','SSD','Clé USB'],0,'La RAM conserve temporairement les données utilisées.'),
+q('Quelle mémoire est non volatile ?',['RAM','ROM'],1,'La ROM conserve son contenu sans alimentation.'),
+q('Quel élément réalise les calculs et exécute les instructions ?',['SSD','Processeur','Disque dur externe'],1,'Le processeur exécute les instructions.'),
+q('Parmi ces éléments, lesquels servent au stockage de fichiers ?',['SSD','Disque dur interne','Disque dur externe','Clé USB'],[0,1,2,3],'Les quatre permettent de stocker des fichiers.',{kind:'multi'}),
+q('Quelle image représente une RAM ?',['RAM','ROM','SSD','Processeur'],0,'La RAM est généralement sous forme de barrette.',{kind:'parts'}),
+q('Quelle image représente un SSD ?',['RAM','ROM','SSD','Processeur'],2,'Le SSD sert au stockage.',{kind:'parts'}),
+q('Quel support se branche pour transporter des fichiers ?',['ROM','Processeur','Clé USB','RAM'],2,'Une clé USB est un support amovible.'),
+q('Quel stockage est destiné à rester dans le boîtier ?',['Disque dur interne','Disque dur externe'],0,'Le disque dur interne est installé dans le PC.'),
+q('Quel stockage se transporte souvent dans un boîtier relié par câble ?',['RAM','Disque dur externe','ROM'],1,'Le disque dur externe se connecte au PC.'),
+q('Que devient le contenu de la RAM sans alimentation ?',['Il est conservé','Il disparaît'],1,'La RAM est volatile.')
 ]},
-{id:'periph',icon:'🎧',title:'Les périphériques',subtitle:'Entrée, sortie ou entrée et sortie',color:'#19a58d',items:[
-q('La souris est principalement un périphérique…',['D’entrée','De sortie','D’entrée et de sortie'],0,'La souris transmet les mouvements et clics à l’ordinateur.'),
-q('Parmi ces appareils, lesquels sont des périphériques de sortie ?', ['Écran','Microphone','Imprimante','Haut-parleurs'],[0,2,3],'Ces appareils présentent une information produite par l’ordinateur.',{kind:'multi'}),
-q('Une webcam sert surtout à…',['Faire entrer une image','Imprimer un document','Afficher une vidéo'],0,'La webcam capture des images pour l’ordinateur.'),
-q('Un écran tactile peut être classé comme…',['Entrée uniquement','Sortie uniquement','Entrée et sortie'],2,'Il affiche des informations et reçoit des commandes au toucher.'),
-q('Un clavier est un périphérique…',['D’entrée','De sortie','De stockage'],0,'Il permet de saisir des informations.'),
-q('Un casque audio classique est généralement…',['D’entrée','De sortie','D’entrée et de sortie'],1,'Il restitue le son ; un casque avec microphone peut aussi servir d’entrée.'),
-q('Une imprimante permet principalement…',['De saisir des données','De produire des documents imprimés','De calculer'],1,'L’imprimante est un périphérique de sortie.'),
-q('Un microphone est un périphérique…',['D’entrée','De sortie','De stockage'],0,'Il transmet le son capté à l’ordinateur.'),
-q('Un appareil multifonction imprimante-scanner est…',['Seulement entrée','Seulement sortie','Entrée et sortie'],2,'Le scanner entre des images et l’imprimante les restitue.'),
-q('Quel périphérique est utilisé pour montrer une présentation sur un mur ?', ['Vidéoprojecteur','Souris','Microphone'],0,'Le vidéoprojecteur est un périphérique de sortie.')
+{id:'periph',icon:'🎧',title:'Périphériques',subtitle:'Entrée, sortie, entrée et sortie',color:'#19a58d',items:[
+q('La souris est un périphérique…',['D’entrée','De sortie','D’entrée et de sortie'],0,'Elle transmet les clics et déplacements.'),
+q('Quels sont les périphériques d’entrée ?',['Microphone','Webcam','Imprimante','Clavier'],[0,1,3],'Ils transmettent des informations vers le PC.',{kind:'multi'}),
+q('Quels sont les périphériques de sortie ?',['Écran','Haut-parleurs','Scanner','Imprimante'],[0,1,3],'Ils restituent des informations.',{kind:'multi'}),
+q('Un écran tactile est un périphérique…',['D’entrée','De sortie','D’entrée et de sortie'],2,'Il affiche et reçoit les gestes.'),
+q('Un scanner est un périphérique…',['D’entrée','De sortie'],0,'Il numérise des documents.'),
+q('Un casque avec microphone est…',['D’entrée uniquement','De sortie uniquement','D’entrée et de sortie'],2,'Il reçoit et émet du son.'),
+q('Un vidéoprojecteur est…',['D’entrée','De sortie'],1,'Il projette des images.'),
+q('Une imprimante multifonction avec scanner est…',['D’entrée et de sortie','De sortie uniquement'],0,'Elle imprime et numérise.')
 ]},
-{id:'ports',icon:'🔌',title:'Ports et connecteurs',subtitle:'Reconnaître les formes et les usages',color:'#eb9b3d',items:[
-q('Quel connecteur permet souvent de brancher une clé USB classique ?', ['USB-A','VGA','RJ45','Jack audio'],0,'Le port USB-A est rectangulaire.',{kind:'visual',visual:'usb-a'}),
-q('Quel connecteur a une forme ovale et réversible ?', ['USB-B','USB-C','VGA','DC-IN'],1,'L’USB-C est ovale et se branche dans les deux sens.',{kind:'visual',visual:'usb-c'}),
-q('Quel connecteur transmet souvent la vidéo et le son à un écran ?', ['HDMI','RJ45','Jack 3,5 mm'],0,'Le HDMI peut transmettre le son et l’image.',{kind:'visual',visual:'hdmi'}),
-q('Quel connecteur relie souvent un ordinateur au réseau par câble ?', ['HDMI','RJ45','USB-B'],1,'Le RJ45 est utilisé pour une connexion Ethernet.',{kind:'visual',visual:'rj45'}),
-q('Quel ancien connecteur vidéo possède généralement 15 broches ?', ['VGA','USB-C','Jack audio'],0,'Le VGA transmet un signal vidéo analogique.',{kind:'visual',visual:'vga'}),
-q('Quel connecteur peut relier un casque filaire classique ?', ['Jack 3,5 mm','RJ45','VGA'],0,'Le jack audio de 3,5 mm transmet un signal audio.',{kind:'visual',visual:'jack'}),
-q('Quel connecteur vidéo possède souvent un coin biseauté ?', ['DisplayPort','Micro-USB','USB-B'],0,'Le DisplayPort peut connecter un écran externe.',{kind:'visual',visual:'displayport'}),
-q('Quel ancien connecteur USB est souvent utilisé sur des imprimantes ?', ['USB-B','Jack','HDMI'],0,'L’USB-B classique a une forme presque carrée.',{kind:'visual',visual:'usb-b'}),
-q('Quel connecteur USB miniature équipait autrefois de nombreux smartphones ?', ['Micro-USB','VGA','RJ45'],0,'Le micro-USB était courant avant l’USB-C.',{kind:'visual',visual:'micro-usb'}),
-q('Quel connecteur USB plus ancien est plus épais que le micro-USB ?', ['Mini-USB','USB-C','DisplayPort'],0,'Le mini-USB a été utilisé sur des appareils photo et accessoires.',{kind:'visual',visual:'mini-usb'}),
-q('Quel connecteur est souvent dédié à l’alimentation électrique ?', ['DC-IN','HDMI','VGA'],0,'DC-IN désigne une entrée d’alimentation en courant continu.',{kind:'visual',visual:'dc-in'}),
-q('Quelle différence entre port et connecteur ?', ['Le port est la prise sur l’appareil, le connecteur est l’embout du câble','Ce sont toujours deux mots pour le même objet','Le connecteur est uniquement logiciel'],0,'Le port accueille le connecteur du câble.')
+{id:'ports',icon:'🔌',title:'Ports et connecteurs',subtitle:'Observe les formes et reconnais les prises',color:'#eb9b3d',items:[
+q('Reconnais le connecteur illustré.',['HDMI','VGA','USB-C','RJ45'],0,'HDMI transmet une image et souvent le son.',{kind:'visual',visual:'hdmi'}),
+q('Reconnais le connecteur illustré.',['HDMI','VGA','USB-A','DisplayPort'],1,'VGA possède 15 broches en trois rangées.',{kind:'visual',visual:'vga'}),
+q('Reconnais le connecteur illustré.',['DisplayPort','HDMI','Mini-USB','RJ45'],0,'DisplayPort possède un angle caractéristique.',{kind:'visual',visual:'displayport'}),
+q('Reconnais le connecteur illustré.',['Jack 3,5 mm','RJ45','USB-B','HDMI'],1,'RJ45 est utilisé pour le réseau Ethernet.',{kind:'visual',visual:'rj45'}),
+q('Reconnais le connecteur illustré.',['Jack 3,5 mm','DC-IN','USB-C'],0,'Le jack audio est une prise ronde.',{kind:'visual',visual:'jack'}),
+q('Reconnais le connecteur illustré.',['USB-A','USB-B','USB-C'],0,'USB-A possède une forme rectangulaire.',{kind:'visual',visual:'usb-a'}),
+q('Reconnais le connecteur illustré.',['USB-B','USB-C','Micro-USB'],1,'USB-C est ovale et réversible.',{kind:'visual',visual:'usb-c'}),
+q('Reconnais le connecteur illustré.',['USB-A','USB-B','USB-C'],1,'USB-B est généralement de forme presque carrée.',{kind:'visual',visual:'usb-b'}),
+q('Reconnais le connecteur illustré.',['Mini-USB','Micro-USB','USB-C'],0,'Le Mini-USB est un ancien petit format.',{kind:'visual',visual:'mini-usb'}),
+q('Reconnais le connecteur illustré.',['Mini-USB','Micro-USB','HDMI'],1,'Le Micro-USB est plus plat et plus petit.',{kind:'visual',visual:'micro-usb'}),
+q('Reconnais le connecteur illustré.',['DC-IN','Jack 3,5 mm','RJ45'],0,'DC-IN désigne une prise d’alimentation.',{kind:'visual',visual:'dc-in'})
 ]},
-{id:'keyboard',icon:'⌨️',title:'Défi clavier AZERTY',subtitle:'Touches, raccourcis et caractères spéciaux',color:'#dc5fa6',items:[
-q('Quelle touche permet d’écrire une seule majuscule ?', ['Maj (Shift)','Échap','Entrée'],0,'Maintenir Maj permet d’écrire une majuscule.'),
-q('Quel raccourci sert à copier ?', ['Ctrl + C','Ctrl + V','Ctrl + Z'],0,'Ctrl+C copie la sélection.',{kind:'keyboard',target:'Ctrl + C'}),
-q('Quel raccourci sert à coller ?', ['Ctrl + C','Ctrl + V','Ctrl + S'],1,'Ctrl+V colle le contenu copié.',{kind:'keyboard',target:'Ctrl + V'}),
-q('Quel raccourci sert à annuler la dernière action ?', ['Ctrl + A','Ctrl + P','Ctrl + Z'],2,'Ctrl+Z annule généralement la dernière action.',{kind:'keyboard',target:'Ctrl + Z'}),
-q('Quel raccourci sert à tout sélectionner ?', ['Ctrl + A','Ctrl + X','Ctrl + B'],0,'Ctrl+A sélectionne tout.',{kind:'keyboard',target:'Ctrl + A'}),
-q('Quelle touche supprime généralement le caractère situé à gauche du curseur ?', ['Retour arrière (Backspace)','Tab','Maj'],0,'Retour arrière efface vers la gauche.'),
-q('Quelle touche sert à passer à la ligne dans un traitement de texte ?', ['Entrée','Verr Maj','Alt Gr'],0,'Entrée crée un nouveau paragraphe.'),
-q('Quelle touche aide à saisir des symboles supplémentaires comme @ sur un clavier AZERTY belge ?', ['Alt Gr','Échap','Caps Lock'],0,'Alt Gr permet d’accéder à un troisième caractère sur certaines touches.',{kind:'keyboard',target:'Alt Gr'}),
-q('Écris le caractère « é » dans le champ.', ['é'],0,'La lettre é est une lettre accentuée.',{kind:'type',target:'é'}),
-q('Écris le caractère « @ » dans le champ.', ['@'],0,'Le symbole @ est utilisé dans les adresses électroniques.',{kind:'type',target:'@'}),
-q('Écris le caractère « € » dans le champ.', ['€'],0,'Le signe € représente l’euro.',{kind:'type',target:'€'}),
-q('Quelle touche permet de passer d’un champ à l’autre ?', ['Tab','Espace','Verr Num'],0,'La touche Tab permet souvent de passer au champ suivant.')
+{id:'keyboard',icon:'⌨️',title:'Clavier AZERTY français',subtitle:'Choisir les touches, puis saisir des lettres et des mots',color:'#dc5fa6',items:[
+q('Quelle touche permet d’écrire une majuscule temporaire ?',['Maj','Entrée','Tab'],0,'Maintiens Maj et appuie sur la lettre.',{kind:'keyboard',target:'Maj'}),
+q('Quelles touches permettent de copier ?',['Ctrl + C','Ctrl + V','Ctrl + Z'],0,'Ctrl + C copie.',{kind:'keyboard',target:'Ctrl + C'}),
+q('Quelles touches permettent de coller ?',['Ctrl + C','Ctrl + V','Ctrl + A'],1,'Ctrl + V colle.',{kind:'keyboard',target:'Ctrl + V'}),
+q('Quelles touches permettent de saisir @ sur AZERTY français France ?',['Alt Gr + 0','Ctrl + A','Maj + 2'],0,'Alt Gr + 0 permet de saisir @.',{kind:'keyboard',target:'Alt Gr + 0'}),
+q('Quelles touches permettent de saisir € ?',['Alt Gr + E','Maj + E','Ctrl + E'],0,'Alt Gr + E permet de saisir €.',{kind:'keyboard',target:'Alt Gr + E'}),
+q('Écris la lettre « é ».',['é'],0,'La lettre attendue est é.',{kind:'type',target:'é'}),
+q('Écris la lettre « ç ».',['ç'],0,'La lettre attendue est ç.',{kind:'type',target:'ç'}),
+q('Écris le mot « pixel ».',['pixel'],0,'Mot attendu : pixel.',{kind:'type',target:'pixel'}),
+q('Écris le mot « clavier ».',['clavier'],0,'Mot attendu : clavier.',{kind:'type',target:'clavier'}),
+q('Écris le mot « ordinateur ».',['ordinateur'],0,'Mot attendu : ordinateur.',{kind:'type',target:'ordinateur'}),
+q('Écris le mot « école ».',['école'],0,'Mot attendu : école.',{kind:'type',target:'école'})
 ]}];
 const app=document.querySelector<HTMLDivElement>('#app')!;
 let topic:Topic|null=null;let ix=0;let score=0;let selected:number[]=[];let answered=false;let typed='';let saved:Record<string,number>={};
