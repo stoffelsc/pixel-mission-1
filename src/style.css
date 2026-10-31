@@ -63,3 +63,13 @@
 /* Photographies pédagogiques : afficher l'intégralité des objets sans zoom ni découpe */
 .tech-photo.reference-photo{display:flex;align-items:center;justify-content:center;background:#f5f9ff;width:100%;min-height:230px;border-radius:18px;overflow:hidden}
 .tech-photo.reference-photo img{display:block;width:100%;max-width:100%;height:auto;max-height:none;object-fit:contain;padding:8px}
+
+/* Clavier AZERTY toujours entièrement visible, y compris sur mobile */
+.keyboard-scroll{display:block!important;width:100%!important;max-width:100%!important;overflow:visible!important;margin:0!important;padding:0!important}
+.virtual-keyboard.fr-fr{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box;padding:clamp(2px,0.7vw,8px)!important;gap:clamp(2px,0.6vw,5px)!important;overflow:hidden}
+.virtual-keyboard.fr-fr .key-row{width:100%!important;min-width:0!important;display:flex!important;gap:clamp(1px,0.35vw,4px)!important}
+.virtual-keyboard.fr-fr .virtual-key{box-sizing:border-box;flex:1 1 0!important;min-width:0!important;min-height:clamp(37px,7vw,50px)!important;padding:2px 0!important;border-radius:clamp(3px,0.8vw,7px)!important;font-size:clamp(7px,1.8vw,13px)!important;line-height:1.05!important;overflow:hidden;word-break:normal}
+.virtual-keyboard.fr-fr .virtual-key small{font-size:clamp(5px,1.35vw,10px)!important;line-height:1.05!important;white-space:normal}
+.virtual-keyboard.fr-fr .virtual-key.wide-key{flex:1.6 1 0!important;font-size:clamp(6px,1.6vw,11px)!important;overflow-wrap:anywhere}
+.keyboard-help{font-size:12px!important;padding:7px 9px!important}
+@media(max-width:430px){.virtual-keyboard.fr-fr .virtual-key{min-height:38px!important;border-bottom-width:2px!important}.virtual-keyboard.fr-fr{border-width:2px!important}.keyboard-help{font-size:11px!important}}
