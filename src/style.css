@@ -98,3 +98,12 @@
 .feedback-reason p{margin:5px 0 0}
 .feedback-correct{margin:10px 0 0;padding:12px 14px;border-radius:12px;background:#f0f7ff;border:1px solid #bfd9ff}
 .feedback-correct .solution{margin:5px 0 0}
+
+/* Révision guidée : erreurs du quiz final */
+.missed-section{text-align:left;margin:26px 0 12px;border-top:2px solid #e3eaf4;padding-top:20px}
+.missed-section h2{font-size:clamp(19px,3vw,25px);margin:0 0 14px;color:#173d76}
+.missed-question{border-left:5px solid #e36b55;background:#fff8f4;border-radius:12px;padding:13px 16px;margin:12px 0;box-shadow:0 3px 9px #31415d0b}
+.missed-question strong{color:#833a26}
+.missed-question p{margin:7px 0;line-height:1.5;overflow-wrap:anywhere}
+.missed-question .missed-prompt{font-weight:800;color:#243a5e}
+.missed-question b{color:#264a78}
