@@ -77,3 +77,10 @@
 /* Images ROM et SSD : identiques en rubrique et quiz, cadrées entièrement */
 .tech-photo.component-quiz-photo{width:100%;max-width:680px;margin:auto;background:#eaf7ff;border-radius:18px;overflow:hidden;min-height:0;display:block}
 .tech-photo.component-quiz-photo img{display:block;width:100%;height:auto;max-height:350px;object-fit:contain;padding:0;margin:0 auto}
+
+/* Clavier AZERTY : ligne inférieure proportionnée sans défilement */
+.virtual-keyboard.fr-fr .virtual-key.key-mini{flex:.9 1 0!important;font-size:clamp(6px,1.5vw,11px)!important;overflow-wrap:anywhere}
+.virtual-keyboard.fr-fr .virtual-key.key-space{flex:4.2 1 0!important;font-size:clamp(7px,1.7vw,12px)!important}
+.virtual-keyboard.fr-fr .key-row{min-width:0}
+.keyboard-scroll{overflow:visible!important}
+@media(max-width:430px){.virtual-keyboard.fr-fr .virtual-key.key-mini{font-size:clamp(6px,1.8vw,9px)!important}.virtual-keyboard.fr-fr .virtual-key.key-space{font-size:clamp(8px,2vw,10px)!important}}
