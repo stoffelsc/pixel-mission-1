@@ -73,3 +73,7 @@
 .virtual-keyboard.fr-fr .virtual-key.wide-key{flex:1.6 1 0!important;font-size:clamp(6px,1.6vw,11px)!important;overflow-wrap:anywhere}
 .keyboard-help{font-size:12px!important;padding:7px 9px!important}
 @media(max-width:430px){.virtual-keyboard.fr-fr .virtual-key{min-height:38px!important;border-bottom-width:2px!important}.virtual-keyboard.fr-fr{border-width:2px!important}.keyboard-help{font-size:11px!important}}
+
+/* Images ROM et SSD : identiques en rubrique et quiz, cadrées entièrement */
+.tech-photo.component-quiz-photo{width:100%;max-width:680px;margin:auto;background:#eaf7ff;border-radius:18px;overflow:hidden;min-height:0;display:block}
+.tech-photo.component-quiz-photo img{display:block;width:100%;height:auto;max-height:350px;object-fit:contain;padding:0;margin:0 auto}
